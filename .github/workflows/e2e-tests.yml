@@ -1,0 +1,38 @@
+name: E2E Test
+on: [push, pull_request]
+
+jobs:
+  setup-env:
+    name: Setup environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.21
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+  test:
+    name: Run e2e tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'e2e'
+    steps:
+      # TODO: mock .terraformrc
+
+      - name: Prepare(init) working directory
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: e2e/login-item
+        run: terraform plan -no-color
