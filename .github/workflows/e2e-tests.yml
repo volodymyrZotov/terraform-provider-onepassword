@@ -26,12 +26,14 @@ jobs:
     needs: [setup-env]
     steps:
       # TODO: mock .terraformrc
+      - name: List dirs
+        run: ls -la
 
       - name: Prepare(init) working directory
-        working-directory: ./e2e
+        working-directory: e2e
         run: terraform init
 
       - name: Terraform Plan
         id: plan
-        working-directory: ./e2e/login-item
+        working-directory: e2e/login-item
         run: terraform plan -no-color
